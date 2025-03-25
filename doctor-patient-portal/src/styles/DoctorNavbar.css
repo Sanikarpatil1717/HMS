@@ -14,11 +14,25 @@
   }
   
   /* Logo */
-  .logo {
+  .logo-container {
+    display: flex;
+    align-items: center;
+    gap: 10px; /* Space between logo and text */
+    padding-left: 20px;
+  }
+  
+  /* Logo Image */
+  .logo-img {
+    width: 40px; /* Adjust as needed */
+    height: 40px;
+    object-fit: contain; /* Ensures the image scales well */
+  }
+  
+  /* Logo Text */
+  .logo-text {
     font-size: 24px;
     font-weight: bold;
     color: #007bff;
-    padding-left: 20px;
   }
   
   /* Navigation Links */
