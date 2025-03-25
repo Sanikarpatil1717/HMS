@@ -18,6 +18,7 @@ const Specialists = () => {
       .get("http://localhost:8888/admin/specialists")
       .then((response) => {
         setSpecialists(response.data);
+        console.log("hello");
         setLoading(false);
       })
       .catch((error) => {
