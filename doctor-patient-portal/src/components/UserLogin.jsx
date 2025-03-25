@@ -1,7 +1,8 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
-import "./Login.css";
+import "../styles/Login.css";
+import HomeNavbar from "./HomeNavbar";
 
 function UserLogin() {
   const navigate = useNavigate();
@@ -36,20 +37,28 @@ function UserLogin() {
     navigate("/register"); // Navigate to registration page
   };
   return (
-    <div className="login-container">
-      <h2>User Login</h2>
-      <input
-        type="email"
-        placeholder="Email"
-        onChange={(e) => setUser({ ...user, email: e.target.value })}
-      />
-      <input
-        type="password"
-        placeholder="Password"
-        onChange={(e) => setUser({ ...user, password: e.target.value })}
-      />
-      <button onClick={handleLogin}>Login</button>
-      <p>New user? <button onClick={handleRegister}>Register</button></p>
+    <div className="admin-dashboard">
+      <HomeNavbar />
+      <div className="bg-container">
+        <div className="login-container">
+          <h2>User Login</h2>
+          <input
+            type="email"
+            placeholder="Email"
+            onChange={(e) => setUser({ ...user, email: e.target.value })}
+          />
+          <input
+            type="password"
+            placeholder="Password"
+            onChange={(e) => setUser({ ...user, password: e.target.value })}
+          />
+          <button onClick={handleLogin}>Login</button>
+          <div class="new-user-container">
+            <span>New user?</span>
+            <a href="/register" class="register-link">Register</a>
+          </div>
+        </div>
+      </div>
     </div>
   );
 }

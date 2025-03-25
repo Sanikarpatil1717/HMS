@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import "./Login.css";
+import "../styles/Login.css";
+import HomeNavbar from "./HomeNavbar";
 
 function AdminLogin() {
   const navigate = useNavigate();
@@ -15,19 +16,24 @@ function AdminLogin() {
   };
 
   return (
-    <div className="login-container">
-      <h2>Admin Login</h2>
-      <input
-        type="text"
-        placeholder="Username"
-        onChange={(e) => setCredentials({ ...credentials, username: e.target.value })}
-      />
-      <input
-        type="password"
-        placeholder="Password"
-        onChange={(e) => setCredentials({ ...credentials, password: e.target.value })}
-      />
-      <button onClick={handleLogin}>Login</button>
+    <div className="admin-dashboard">
+      <HomeNavbar />
+      <div className="bg-container">
+        <div className="login-container">
+          <h2>Admin Login</h2>
+          <input
+            type="text"
+            placeholder="Username"
+            onChange={(e) => setCredentials({ ...credentials, username: e.target.value })}
+          />
+          <input
+            type="password"
+            placeholder="Password"
+            onChange={(e) => setCredentials({ ...credentials, password: e.target.value })}
+          />
+          <button onClick={handleLogin}>Login</button>
+        </div>
+      </div>
     </div>
   );
 }
