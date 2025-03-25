@@ -1,0 +1,64 @@
+/* Ensure body takes full height */
+html, body {
+  margin: 0;
+  padding: 0;
+  height: 100%;
+}
+
+/* Home page background */
+.home-container {
+  position: relative; /* Allows stacking elements properly */
+  width: 100vw;
+  height: 90vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  
+  /* Background Image */
+  background: url('../assets/homepage.jpg') no-repeat center center;
+  background-size: cover;
+}
+
+/* Container for text and buttons */
+.text-container {
+  position: absolute; 
+  left: 6%; /* Adjust to place it in the white space */
+  top: 40%;
+  transform: translateY(-50%);
+  z-index: 2;
+  background: transparent; /* Optional: Slight white background for contrast */
+  padding: 20px;
+  border-radius: 10px;
+}
+
+/* Styling for text */
+.text-container h1 {
+  color: #007bff; /* Adjust to match your theme */
+  font-size: 2.5rem;
+  font-weight: bold;
+}
+
+/* Button container */
+.button-group {
+  display: flex;
+  gap: 15px;
+  margin-top: 10px;
+  padding-top: 30px;
+}
+
+.button-group button {
+  margin: 10px;
+  padding: 10px 20px;
+  font-size: 16px;
+  border: none;
+  background-color: #007bff;
+  color: white;
+  cursor: pointer;
+  border-radius: 5px;
+}
+
+.button-group button:hover {
+  background-color: #0056b3;
+  color: white;
+}

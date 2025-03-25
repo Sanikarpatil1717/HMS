@@ -1,5 +1,7 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import "../styles/Login.css";
+import HomeNavbar from "./HomeNavbar";
 
 const Register = () => {
     const [user, setUser] = useState({ fullName: "", email: "", password: "" });
@@ -28,25 +30,31 @@ const Register = () => {
   };
 
   return (
-    <div className="register-container">
-      <h2>Register</h2>
-      <input
-        type="text"
-        placeholder="Name"
-        onChange={(e) => setUser({ ...user, fullName: e.target.value })}
-      />
-      <input
-        type="email"
-        placeholder="Email"
-        onChange={(e) => setUser({ ...user, email: e.target.value })}
-      />
-      <input
-        type="password"
-        placeholder="Password"
-        onChange={(e) => setUser({ ...user, password: e.target.value })}
-      />
-      <button onClick={handleRegister}>Register</button>
-      <p>Already have an account? <button onClick={() => navigate("/user-login")}>Login</button></p>
+    <div className="admin-dashboard">
+      <HomeNavbar />
+      <div className="login-container">
+        <h2>Register</h2>
+        <input
+          type="text"
+          placeholder="Name"
+          onChange={(e) => setUser({ ...user, fullName: e.target.value })}
+        />
+        <input
+          type="email"
+          placeholder="Email"
+          onChange={(e) => setUser({ ...user, email: e.target.value })}
+        />
+        <input
+          type="password"
+          placeholder="Password"
+          onChange={(e) => setUser({ ...user, password: e.target.value })}
+        />
+        <button onClick={handleRegister}>Register</button>
+        <div class="new-user-container">
+          <span>Already have an account?</span>
+          <a href="/user-login" class="register-link">Log In</a>
+        </div>
+      </div>
     </div>
   );
 };

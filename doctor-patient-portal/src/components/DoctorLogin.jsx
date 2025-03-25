@@ -1,7 +1,8 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
-import "./Login.css";
+import "../styles/Login.css";
+import HomeNavbar from "./HomeNavbar";
 
 function DoctorLogin() {
   const navigate = useNavigate();
@@ -35,24 +36,29 @@ function DoctorLogin() {
   };
 
   return (
-    <div className="login-container">
-      <h2>Doctor Login</h2>
-      {error && <p className="error-message">{error}</p>}
-      <input
-        type="email"
-        name="email"
-        placeholder="Email"
-        value={doctor.email}
-        onChange={handleChange}
-      />
-      <input
-        type="password"
-        name="password"
-        placeholder="Password"
-        value={doctor.password}
-        onChange={handleChange}
-      />
-      <button onClick={handleLogin}>Login</button>
+    <div className="admin-dashboard">
+      <HomeNavbar />
+      <div className="bg-container">
+        <div className="login-container">
+          <h2>Doctor Login</h2>
+          {error && <p className="error-message">{error}</p>}
+          <input
+            type="email"
+            name="email"
+            placeholder="Email"
+            value={doctor.email}
+            onChange={handleChange}
+          />
+          <input
+            type="password"
+            name="password"
+            placeholder="Password"
+            value={doctor.password}
+            onChange={handleChange}
+          />
+          <button onClick={handleLogin}>Login</button>
+        </div>
+      </div>
     </div>
   );
 }

@@ -49,7 +49,7 @@ function UserDashboard() {
       });
 
       alert(response.data);
-      setShowModal(false);
+      setShowPasswordModal(false);
       setOldPassword("");
       setNewPassword("");
     } catch (error) {
