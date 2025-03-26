@@ -243,9 +243,9 @@ useEffect(() => {
             <tbody>
               {doctors
                 .sort((a, b) => a.id - b.id) // Sort doctors by ID
-                .map((doctor) => (
+                .map((doctor, index) => ( // Use index for sequential numbering
                   <tr key={doctor.id} onClick={() => openModal(doctor)}>
-                    <td>{doctor.id}</td>
+                    <td>{index + 1}</td> {/* Display sequential number */}
                     <td>{doctor.fullName}</td>
                     <td>{doctor.specialism ? doctor.specialism.specialistName : "N/A"}</td>
                     <td>{doctor.email}</td>

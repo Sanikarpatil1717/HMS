@@ -60,7 +60,7 @@ const Register = () => {
             type="password"
             placeholder="Password"
             onChange={(e) =>  {
-              setUser({ ...user, email: e.target.value });
+              setUser({ ...user, password: e.target.value });
             validateEmail(e.target.value)}}
           />
           {emailError && <p className="error-text">{emailError}</p>} {/* Show error message */}
