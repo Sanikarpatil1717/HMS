@@ -176,4 +176,26 @@ public class AdminController {
             return ResponseEntity.status(404).body("Specialist not found.");
         }
     }
+    
+    // DELETE a specialization by name
+    @DeleteMapping("/specialists/name/{name}")
+    public ResponseEntity<String> deleteSpecialistByName(@PathVariable String name) {
+        // Check if any doctor has this specialization
+        List<Doctor> doctorsWithSpecialization = doctorRepository.findBySpecialismNameContainingIgnoreCase(name);
+        
+        if (!doctorsWithSpecialization.isEmpty()) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("A doctor with this specialization exists, hence cannot delete.");
+        }
+        
+        // Find the specialization
+        Optional<Specialist> specialistOpt = specialistRepository.findBySpecialistNameIgnoreCase(name);
+        
+        if (specialistOpt.isPresent()) {
+            specialistRepository.delete(specialistOpt.get());
+            return ResponseEntity.ok("Specialization deleted successfully.");
+        } else {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Specialization not found.");
+        }
+    }
+
 }

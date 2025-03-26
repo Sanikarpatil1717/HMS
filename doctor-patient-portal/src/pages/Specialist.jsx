@@ -8,6 +8,10 @@ const Specialists = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
   const [specialistName, setSpecialistName] = useState("");
+  const [modalOpen, setModalOpen] = useState(false);
+  const [deleteName, setDeleteName] = useState("");
+  const [deleteMessage, setDeleteMessage] = useState("");
+  const [isError, setIsError] = useState(false);
 
   useEffect(() => {
     fetchSpecialists();
@@ -18,7 +22,6 @@ const Specialists = () => {
       .get("http://localhost:8888/admin/specialists")
       .then((response) => {
         setSpecialists(response.data);
-        console.log("hello");
         setLoading(false);
       })
       .catch((error) => {
@@ -41,6 +44,30 @@ const Specialists = () => {
       })
       .catch(() => setError("Failed to add specialist."));
   };
+
+  const deleteSpecialist = () => {
+    if (!deleteName) return;
+  
+    axios
+      .delete(`http://localhost:8888/admin/specialists/name/${deleteName}`)
+      .then((response) => {
+        setDeleteMessage(response.data || "Specialization deleted successfully.");
+        setDeleteName("");
+        setIsError(false); // Error - Set red color
+        fetchSpecialists();
+      })
+      .catch((error) => {
+        if (error.response && error.response.data) {
+          setDeleteMessage(error.response.data || "Failed to delete specialization.");
+          setIsError(true); // Error - Set red color
+        } else {
+          setDeleteMessage("An unexpected error occurred.");
+          setIsError(true); // Error - Set red color
+        }
+      });
+  };
+  
+  
 
   return (
     <div className="admin-dashboard">
@@ -86,7 +113,39 @@ const Specialists = () => {
             </tbody>
           </table>
         )}
+
+        <button onClick={() => setModalOpen(true)} className="delete-sp-button">
+          Delete Specialization
+        </button>
       </div>
+
+      {modalOpen && (
+        <div className="modal-overlay">
+          <div className="modal-content">
+            <button
+              className="modal-close-button"
+              onClick={() => {
+                setModalOpen(false);
+                setDeleteMessage("");
+              }}
+            >
+              &times;
+            </button>
+            <h2>Delete Specialization</h2>
+            <input
+              type="text"
+              value={deleteName}
+              onChange={(e) => setDeleteName(e.target.value)}
+              placeholder="Enter specialization name"
+            />
+            <button onClick={deleteSpecialist} className="submit-button">
+              Delete
+            </button>
+            <br></br>
+            {deleteMessage && <p className={isError ? "error-delete" : "success-delete"}>{deleteMessage}</p>}
+          </div>
+        </div>
+      )}
     </div>
   );
 };
