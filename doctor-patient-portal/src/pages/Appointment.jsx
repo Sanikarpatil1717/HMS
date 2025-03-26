@@ -2,13 +2,15 @@ import React, { useEffect, useState } from "react";
 import axios from "axios";
 import AdminNavbar from "../components/AdminNavbar";
 import "../styles/pages.css";
-// 
+
 const Appointments = () => {
   const [appointments, setAppointments] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
   const [filterType, setFilterType] = useState("all"); // "userId", "doctorId", or "all"
   const [searchValue, setSearchValue] = useState("");
+  const [doctors, setDoctors] = useState([]);
+  const [users, setUsers] = useState([]);
 
   useEffect(() => {
     fetchAppointments();
@@ -26,6 +28,28 @@ const Appointments = () => {
         setError("Failed to fetch appointments.");
         setLoading(false);
       });
+  };
+
+  // Fetch doctors and users data
+  useEffect(() => {
+    axios.get("http://localhost:8888/admin/doctors")
+      .then((response) => setDoctors(response.data))
+      .catch((error) => console.error("Error fetching doctors:", error));
+
+    axios.get("http://localhost:8888/admin/users")
+      .then((response) => setUsers(response.data))
+      .catch((error) => console.error("Error fetching users:", error));
+  }, []);
+
+  // Helper functions to get names by ID
+  const getDoctorName = (doctorId) => {
+    const doctor = doctors.find((doc) => doc.id === doctorId);
+    return doctor ? doctor.fullName : "Unknown Doctor";
+  };
+
+  const getUserName = (userId) => {
+    const user = users.find((usr) => usr.id === userId);
+    return user ? user.fullName : "Unknown User";
   };
 
   const handleFilterChange = (e) => {
@@ -101,17 +125,17 @@ const Appointments = () => {
             <thead>
               <tr>
                 <th>ID</th>
-                <th>User ID</th>
-                <th>Doctor ID</th>
+                <th>User</th>
+                <th>Doctor</th>
                 <th>Date</th>
               </tr>
             </thead>
             <tbody>
-              {appointments.map((appointment) => (
+              {appointments.map((appointment,index) => (
                 <tr key={appointment.id}>
-                  <td>{appointment.id}</td>
-                  <td>{appointment.userId}</td>
-                  <td>{appointment.doctorId}</td>
+                  <td>{index+1}</td>
+                  <td>{getUserName(appointment.userId)}</td> {/* Display user name */}
+                  <td>{getDoctorName(appointment.doctorId)}</td> {/* Display doctor name */}
                   <td>{appointment.appointmentDate}</td>
                 </tr>
               ))}
