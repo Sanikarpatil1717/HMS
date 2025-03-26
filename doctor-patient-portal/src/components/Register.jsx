@@ -43,29 +43,33 @@ const Register = () => {
   return (
     <div className="admin-dashboard">
       <HomeNavbar />
-      <div className="login-container">
-        <h2>Register</h2>
-        <input
-          type="text"
-          placeholder="Name"
-          onChange={(e) => setUser({ ...user, fullName: e.target.value })}
-        />
-        <input
-          type="email"
-          placeholder="Email"
-          onChange={(e) => setUser({ ...user, email: e.target.value })}
-        />
-        <input
-          type="password"
-          placeholder="Password"
-          onChange={(e) => setUser({ ...user, password: e.target.value })} // Fix: Update the password field
-        />
-        {emailError && <p className="error-text">{emailError}</p>} {/* Show error message */}
+      <div className="bg-container">
+        <div className="login-container">
+          <h2>Register</h2>
+          <input
+            type="text"
+            placeholder="Name"
+            onChange={(e) => setUser({ ...user, fullName: e.target.value })}
+          />
+          <input
+            type="email"
+            placeholder="Email"
+            onChange={(e) => setUser({ ...user, email: e.target.value })}
+          />
+          <input
+            type="password"
+            placeholder="Password"
+            onChange={(e) =>  {
+              setUser({ ...user, password: e.target.value });
+            validateEmail(e.target.value)}}
+          />
+          {emailError && <p className="error-text">{emailError}</p>} {/* Show error message */}
 
-        <button onClick={handleRegister}>Register</button>
-        <div class="new-user-container">
-          <span>Already have an account?</span>
-          <a href="/user-login" class="register-link">Log In</a>
+          <button onClick={handleRegister}>Register</button>
+          <div class="new-user-container">
+            <span>Already have an account?</span>
+            <a href="/user-login" class="register-link">Log In</a>
+          </div>
         </div>
       </div>
     </div>

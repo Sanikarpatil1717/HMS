@@ -13,7 +13,6 @@ public interface DoctorRepository extends JpaRepository<Doctor, Integer> {
 	List<Doctor> findByFullNameContainingIgnoreCase(@Param("fullName") String fullName);
     
    // List<Doctor> findBySpecialistContainingIgnoreCase(String specialist);
-	
 	@Query("SELECT d FROM Doctor d WHERE LOWER(d.specialism.specialistName) LIKE LOWER(CONCAT('%', :specialismName, '%'))")
 	List<Doctor> findBySpecialismNameContainingIgnoreCase(@Param("specialismName") String specialismName);
 }

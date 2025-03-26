@@ -16,6 +16,8 @@ const Doctors = () => {
   const [specialists, setSpecialists] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
+  const [deleteMessage, setDeleteMessage] = useState("");
+  const [isError, setIsError] = useState(false);
  
   const [newDoctor, setNewDoctor] = useState({
     fullName: "",
@@ -26,7 +28,6 @@ const Doctors = () => {
     phone: "",
     password: "",
   });
- 
  
 useEffect(() => {
   axios.get("http://localhost:8888/admin/specialists")
@@ -137,17 +138,26 @@ useEffect(() => {
     });
   };
  
-  const handleDelete = (id) => {
-    if (!window.confirm("Are you sure you want to delete this doctor?")) return;
- 
+  const handleDelete = (doctorId) => {
+    if (!doctorId) return;
+  
     axios
-      .delete(`http://localhost:8888/admin/doctors/${id}`)
-      .then(() => {
-        setDoctors(doctors.filter((doc) => doc.id !== id));
-        closeModal();
+      .delete(`http://localhost:8888/admin/doctors/${doctorId}`)
+      .then((response) => {
+        setDeleteMessage(response.data || "Doctor deleted successfully.");
+        setIsError(false);
+        fetchDoctors(); // Refresh the list after deletion
+        closeModal(); // Close the modal after successful deletion
       })
-      .catch((error) => console.error("Error deleting doctor:", error));
-  };
+      .catch((error) => {
+        if (error.response && error.response.data) {
+          setDeleteMessage(error.response.data || "Failed to delete doctor.");
+        } else {
+          setDeleteMessage("An unexpected error occurred.");
+        }
+        setIsError(true); // Set red color for error message
+      });
+  };  
  
   const handleAddDoctor = (e) => {
     e.preventDefault();
@@ -377,6 +387,8 @@ useEffect(() => {
             <button onClick={() => handleDelete(selectedDoctor.id)} className="search-button">Delete</button>
             <button onClick={closeModal} className="search-button">Close</button>
           </div>
+          <br></br>
+          {deleteMessage && <p className={isError ? "error-delete" : "success-delete"}>{deleteMessage}</p>}
         </Modal>
       </div>
     </div>
