@@ -5,10 +5,21 @@ import HomeNavbar from "./HomeNavbar";
 
 const Register = () => {
     const [user, setUser] = useState({ fullName: "", email: "", password: "" });
+    const [emailError, setEmailError] = useState(""); // State to store email validation error
 
   const navigate = useNavigate();
+  const validateEmail = (email) => {
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/; // Simple email regex pattern
+    return emailRegex.test(email);
+  };
 
   const handleRegister = async () => {
+    if (!validateEmail(user.email)) {
+      setEmailError("Please enter a valid email address");
+      return;
+    }
+    setEmailError(""); // Clear error if valid
+
     try {
       const response = await fetch("http://localhost:8888/api/users/register", {
         method: "POST",
@@ -47,8 +58,12 @@ const Register = () => {
         <input
           type="password"
           placeholder="Password"
-          onChange={(e) => setUser({ ...user, password: e.target.value })}
+          onChange={(e) =>  {
+            setUser({ ...user, email: e.target.value });
+           validateEmail(e.target.value)}}
         />
+        {emailError && <p className="error-text">{emailError}</p>} {/* Show error message */}
+
         <button onClick={handleRegister}>Register</button>
         <div class="new-user-container">
           <span>Already have an account?</span>

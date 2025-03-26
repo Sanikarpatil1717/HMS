@@ -44,7 +44,7 @@ const Specialists = () => {
       })
       .catch(() => setError("Failed to add specialist."));
   };
-
+  
   const deleteSpecialist = () => {
     if (!deleteName) return;
   
@@ -66,8 +66,6 @@ const Specialists = () => {
         }
       });
   };
-  
-  
 
   return (
     <div className="admin-dashboard">
@@ -89,6 +87,7 @@ const Specialists = () => {
           >
             Add Specialisation
           </button>
+  
         </div>
 
         {loading ? (
@@ -101,6 +100,7 @@ const Specialists = () => {
               <tr>
                 <th>ID</th>
                 <th>Specialty</th>
+                <th>Action</th>
               </tr>
             </thead>
             <tbody>
@@ -108,6 +108,14 @@ const Specialists = () => {
                 <tr key={specialist.id}>
                   <td>{specialist.id}</td>
                   <td>{specialist.specialistName}</td>
+                  <td>
+                    <button
+                      onClick={() => removeSpecialist(specialist.id)}
+                      className="delete-button"
+                    >
+                      Remove
+                    </button>
+                </td>
                 </tr>
               ))}
             </tbody>
