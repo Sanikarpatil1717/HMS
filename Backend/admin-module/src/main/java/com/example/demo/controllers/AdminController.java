@@ -107,15 +107,21 @@ public class AdminController {
     @PutMapping("/doctors/{id}")
     public ResponseEntity<?> updateDoctor(@PathVariable int id, @RequestBody Doctor updatedDoctor) {
         Optional<Doctor> existingDoctorOpt = doctorRepository.findById(id);
-
+        
+        
+ 
         if (existingDoctorOpt.isPresent()) {
             Doctor existingDoctor = existingDoctorOpt.get();
-            
+            if (updatedDoctor.getSpecialism() != null) {
+                // Find specialist by name
+                Specialist existingSpecialist = specialistRepository.findBySpecialistNameIgnoreCase(updatedDoctor.getSpecialism().getSpecialistName())
+                    .orElseThrow(() -> new RuntimeException("Specialist not found"));
+                existingDoctor.setSpecialism(existingSpecialist);
+            }
             // Update fields
-            //existingDoctor.setFullName(updatedDoctor.getFullName());
+            existingDoctor.setFullName(updatedDoctor.getFullName());
             existingDoctor.setDateOfBirth(updatedDoctor.getDateOfBirth());
             existingDoctor.setQualification(updatedDoctor.getQualification());
-            existingDoctor.setSpecialism(updatedDoctor.getSpecialism()); 
             existingDoctor.setEmail(updatedDoctor.getEmail());
             existingDoctor.setPhone(updatedDoctor.getPhone());
             
@@ -126,6 +132,7 @@ public class AdminController {
             return ResponseEntity.status(404).body("Doctor not found.");
         }
     }
+ 
 
     // ADD a new doctor
     @PostMapping("/doctors")

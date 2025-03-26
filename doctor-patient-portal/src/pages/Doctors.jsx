@@ -3,7 +3,7 @@ import Modal from "react-modal";
 import axios from "axios";
 import AdminNavbar from "../components/AdminNavbar";
 import "../styles/pages.css";
-
+ 
 const Doctors = () => {
   const [doctors, setDoctors] = useState([]);
   const [selectedDoctor, setSelectedDoctor] = useState(null);
@@ -16,31 +16,29 @@ const Doctors = () => {
   const [specialists, setSpecialists] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
-  const [phoneError, setPhoneError] = useState("");
-
-
+ 
   const [newDoctor, setNewDoctor] = useState({
     fullName: "",
     dateOfBirth: "",
     qualification: "",
-    specialist: "",
+    specialism: "",
     email: "",
     phone: "",
     password: "",
   });
-
-
+ 
+ 
 useEffect(() => {
   axios.get("http://localhost:8888/admin/specialists")
     .then(response => setSpecialists(response.data))
     .catch(error => console.error("Error fetching specialists:", error));
 }, []);
-
+ 
   console.log(specialists)
   useEffect(() => {
     fetchDoctors();
   }, []);
-
+ 
   const fetchDoctors = () => {
     setLoading(true);
     axios
@@ -54,54 +52,55 @@ useEffect(() => {
         setLoading(false);
       });
   };
-
-
+ 
+ 
   const handleFilterChange = (e) => {
     setFilterValue(e.target.value);
   };
-
+ 
   const handleFilterTypeChange = (e) => {
     const selectedFilter = e.target.value;
     setFilterType(selectedFilter);
     setFilterValue(""); // Reset filter input when switching type
-
+ 
     if (selectedFilter === "all") {
       fetchDoctors(); // Fetch all doctors immediately
     }
   };
-
+ 
   const applyFilter = () => {
     if (filterType === "all" || !filterValue) {
       fetchDoctors();
       return;
     }
-
+ 
     const endpoint =
       filterType === "name"
         ? `http://localhost:8888/admin/doctors/name/${filterValue}`
         : `http://localhost:8888/admin/doctors/specialist/${filterValue}`;
-
+ 
     axios
       .get(endpoint)
       .then((response) => setDoctors(response.data))
       .catch((error) => console.error("Error filtering doctors:", error));
   };
-
+ 
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
-
+ 
   const handleSave = () => {
     axios
       .put(`http://localhost:8888/admin/doctors/${selectedDoctor.id}`, formData)
       .then((response) => {
         setDoctors(doctors.map((doc) => (doc.id === selectedDoctor.id ? response.data : doc)));
+        console.log(response);
         alert("Doctor updated successfully");
         closeModal();
       })
       .catch((error) => console.error("Error updating doctor:", error));
   };
-
+ 
   const openModal = (doctor) => {
     setSelectedDoctor(doctor);
     setModalIsOpen(true);
@@ -109,38 +108,38 @@ useEffect(() => {
       fullName: doctor.fullName,
       dateOfBirth: doctor.dateOfBirth,
       qualification: doctor.qualification,
-      specialist: doctor.specialist,
+      specialism: doctor.specialism.specialistName,
       email: doctor.email,
       phone: doctor.phone,
     });
     setIsEditing(false);
   };
-
+ 
   const closeModal = () => {
     setModalIsOpen(false);
     setSelectedDoctor(null);
   };
-
+ 
   const openAddDoctorModal = () => {
     setAddDoctorModal(true);
   };
-
+ 
   const closeAddDoctorModal = () => {
     setAddDoctorModal(false);
     setNewDoctor({
       fullName: "",
       dateOfBirth: "",
       qualification: "",
-      specialist: "",
+      specialism: "",
       email: "",
       phone: "",
       password: "",
     });
   };
-
+ 
   const handleDelete = (id) => {
     if (!window.confirm("Are you sure you want to delete this doctor?")) return;
-
+ 
     axios
       .delete(`http://localhost:8888/admin/doctors/${id}`)
       .then(() => {
@@ -149,23 +148,18 @@ useEffect(() => {
       })
       .catch((error) => console.error("Error deleting doctor:", error));
   };
-
+ 
   const handleAddDoctor = (e) => {
     e.preventDefault();
-    if (newDoctor.phone.length !== 10) {
-      setPhoneError("Phone number must be exactly 10 digits");
-      return; // Prevent submission
-    }
+ 
     const doctorWithPassword = {
       ...newDoctor,
       password: newDoctor.fullName,
       specialism: { id: newDoctor.specialismId } // Send only the ID
     };
-
+ 
     console.log(doctorWithPassword)
-
-    
-  
+ 
     axios
       .post("http://localhost:8888/admin/doctors", doctorWithPassword)
       .then((response) => {
@@ -173,42 +167,16 @@ useEffect(() => {
         closeAddDoctorModal();
       })
       .catch((error) => console.error("Error adding doctor:", error));
-  
+ 
     alert("Doctor has been added. Please login with your full name as the password.");
   };
-  
-
-  const handlePhoneChange = (e) => {
-    const inputValue = e.target.value;
-  
-    // Allow only numbers
-    if (!/^\d*$/.test(inputValue)) {
-      setPhoneError("Only numbers are allowed");
-      return;
-    }
-  
-    // Allow input only up to 10 digits
-    if (inputValue.length > 10) {
-      return; // Prevent typing more than 10 digits
-    }
-  
-    setNewDoctor({ ...newDoctor, phone: inputValue });
-  
-    // Show error if length is less than 10
-    if (inputValue.length < 10) {
-      setPhoneError("Phone number must be exactly 10 digits");
-    } else {
-      setPhoneError(""); // Clear error when valid
-    }
-  };
-  
-  
+ 
   return (
     <div className="admin-dashboard">
       <AdminNavbar />
       <div className="container">
         <h1 className="page-title">Doctors List</h1>
-
+ 
         {/* Filters */}
         <div className="filter-container">
           <select
@@ -220,7 +188,7 @@ useEffect(() => {
             <option value="name">By Name</option>
             <option value="specialist">By Specialist</option>
           </select>
-
+ 
           {filterType !== "all" && (
             <>
             <input
@@ -230,7 +198,7 @@ useEffect(() => {
               onChange={handleFilterChange}
               className="filter-input"
             />
-
+ 
             <button
               onClick={applyFilter}
               className="search-button"
@@ -239,7 +207,7 @@ useEffect(() => {
             </button>
             </>
           )}
-
+ 
           <button
             onClick={openAddDoctorModal}
             className="search-button"
@@ -247,7 +215,7 @@ useEffect(() => {
             Add Doctor
           </button>
         </div>
-        
+       
         {loading ? (
           <p className="loading-text">Loading...</p>
         ) : error ? (
@@ -263,18 +231,20 @@ useEffect(() => {
               </tr>
             </thead>
             <tbody>
-              {doctors.map((doctor) => (
-                <tr key={doctor.id} onClick={() => openModal(doctor)}>
-                  <td>{doctor.id}</td>
-                  <td>{doctor.fullName}</td>
-                  <td>{doctor.specialism ? doctor.specialism.specialistName : "N/A"}</td>
-                  <td>{doctor.email}</td>
-                </tr>
-              ))}
+              {doctors
+                .sort((a, b) => a.id - b.id) // Sort doctors by ID
+                .map((doctor) => (
+                  <tr key={doctor.id} onClick={() => openModal(doctor)}>
+                    <td>{doctor.id}</td>
+                    <td>{doctor.fullName}</td>
+                    <td>{doctor.specialism ? doctor.specialism.specialistName : "N/A"}</td>
+                    <td>{doctor.email}</td>
+                  </tr>
+                ))}
             </tbody>
           </table>
         )}
-      
+     
         {/* Add Doctor Modal */}
         <Modal
           isOpen={addDoctorModal}
@@ -310,20 +280,12 @@ useEffect(() => {
             </select>
             <input type="email" placeholder="Email" required
               value={newDoctor.email} onChange={(e) => setNewDoctor({ ...newDoctor, email: e.target.value })} />
-            {/* <input type="text" placeholder="Phone" required
-              value={newDoctor.phone} onChange={(e) => setNewDoctor({ ...newDoctor, phone: e.target.value })} /> */}
-              <input
-                type="text"
-                placeholder="Phone"
-                required
-                value={newDoctor.phone}
-                onChange={handlePhoneChange}
-              />
-              {phoneError && <p style={{ color: "red", fontSize: "12px" }}>{phoneError}</p>}
+            <input type="text" placeholder="Phone" required
+              value={newDoctor.phone} onChange={(e) => setNewDoctor({ ...newDoctor, phone: e.target.value })} />
             <button type="submit" className="submit-button">Add Doctor</button>
           </form>
         </Modal>
-
+ 
         {/* Doctor Details Modal */}
         <Modal
           isOpen={modalIsOpen}
@@ -333,39 +295,86 @@ useEffect(() => {
           className="modal-content doctor-modal"
           overlayClassName="modal-overlay"
         >
-
+ 
           <button className="modal-close-button" onClick={closeModal}>
             &times;
           </button>
           <h2 className="modal-title">{isEditing ? "Edit Doctor" : "Doctor Details"}</h2>
-
+ 
           <div className="modal-body">
             {isEditing ? (
               <>
-                {/* <input type="text" name="fullName" placeholder="Enter name change" value={formData.fullName} onChange={handleChange} className="border p-2 w-full rounded" required /> */}
-                <input type="date" name="dateOfBirth" placeholder="Enter dob change" value={formData.dateOfBirth} onChange={handleChange} required />
-                <input type="text" name="qualification" placeholder="Enter qualification change" value={formData.qualification} onChange={handleChange} required />
-                <input type="text" name="specialist" placeholder="Enter speciality change" value={formData.specialist} onChange={handleChange} required />
-                <input type="email" name="email" placeholder="Enter email change" value={formData.email} onChange={handleChange} required />
-                <input type="text" name="phone" placeholder="Enter phone number change" value={formData.phone} onChange={handleChange} required />
+                <input  
+                  type="text"
+                  name="fullName"
+                  placeholder="Enter name change"
+                  value={formData.fullName}
+                  onChange={handleChange}
+                  required
+                />
+                <input
+                  type="date"
+                  name="dateOfBirth"
+                  placeholder="Enter dob change"
+                  value={formData.dateOfBirth}
+                  onChange={handleChange}
+                  required
+                />
+                <input
+                  type="text"
+                  name="qualification"
+                  placeholder="Enter qualification change"
+                  value={formData.qualification}
+                  onChange={handleChange}
+                  required
+                />
+                <select
+                  name="specialism"
+                  value={formData.specialism}
+                  onChange={handleChange}
+                  required
+                >
+                  <option value="">Select Specialism</option>
+                  {specialists.map((specialist) => (
+                    <option key={specialist.id} value={specialist.specialistName}>
+                      {specialist.specialistName}
+                    </option>
+                  ))}
+                </select>
+                <input
+                  type="email"
+                  name="email"
+                  placeholder="Enter email change"
+                  value={formData.email}
+                  onChange={handleChange}
+                  required
+                />
+                <input
+                  type="text"
+                  name="phone"
+                  placeholder="Enter phone number change"
+                  value={formData.phone}
+                  onChange={handleChange}
+                  required
+                />
               </>
             ) : (
               <>
                 <p><strong>Name:</strong> {selectedDoctor?.fullName}</p>
-                <p><strong>Specialist:</strong> {selectedDoctor?.specialist}</p>
+                <p><strong>Specialist:</strong> {selectedDoctor?.specialism.specialistName}</p>
                 <p><strong>Email:</strong> {selectedDoctor?.email}</p>
                 <p><strong>Phone:</strong> {selectedDoctor?.phone}</p>
               </>
             )}
           </div>
-
+ 
           <div className="doctor-modal-buttons">
             {isEditing ? (
               <button onClick={handleSave} className="search-button">Save</button>
             ) : (
               <button onClick={() => setIsEditing(true)} className="search-button">Edit</button>
             )}
-            <button onClick={handleDelete} className="search-button">Delete</button>
+            <button onClick={() => handleDelete(selectedDoctor.id)} className="search-button">Delete</button>
             <button onClick={closeModal} className="search-button">Close</button>
           </div>
         </Modal>
@@ -373,6 +382,5 @@ useEffect(() => {
     </div>
   );
 };
-
+ 
 export default Doctors;
-

@@ -100,7 +100,6 @@ const Specialists = () => {
               <tr>
                 <th>ID</th>
                 <th>Specialty</th>
-                <th>Action</th>
               </tr>
             </thead>
             <tbody>

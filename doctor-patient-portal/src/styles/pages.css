@@ -165,6 +165,31 @@ footer {
   box-sizing: border-box;
 }
 
+.modal-content select {
+  width: 100%;
+  padding: 10px;
+  margin: 8px 0;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  box-sizing: border-box;
+  background: white;
+  appearance: none; /* Remove default browser styling */
+  font-size: 16px;
+  cursor: pointer;
+}
+
+/* Add some spacing inside select */
+.modal-content select:focus {
+  outline: none;
+  border-color: #007bff;
+  box-shadow: 0px 0px 5px rgba(0, 123, 255, 0.5);
+}
+
+/* Adjust Arrow Icon */
+.modal-content select::-ms-expand {
+  display: none; /* Hide default dropdown arrow in IE */
+}
+
 /* Submit Button */
 .submit-button {
   background-color: #007bff;
