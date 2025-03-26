@@ -108,14 +108,6 @@ const Specialists = () => {
                 <tr key={specialist.id}>
                   <td>{specialist.id}</td>
                   <td>{specialist.specialistName}</td>
-                  <td>
-                    <button
-                      onClick={() => removeSpecialist(specialist.id)}
-                      className="delete-button"
-                    >
-                      Remove
-                    </button>
-                </td>
                 </tr>
               ))}
             </tbody>
