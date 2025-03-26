@@ -12,9 +12,16 @@ function AdminDashboard() {
       <AdminNavbar /> {/* Adding the secondary navbar here */}
 
       {/* Content Section */}
-      <div className="admin-content">
+      {/* <div className="admin-content">
         <h2>Welcome, Admin</h2>
         <p>Select an option from the navbar to manage data.</p>
+      </div> */}
+
+      <div className="home-container">
+        <div className="text-container">
+          <h1>Welcome, Admin</h1>
+          <span>You can now manage users, doctors, <br></br>specialists and appointments</span>
+        </div>
       </div>
 
       <Footer />

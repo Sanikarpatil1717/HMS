@@ -164,13 +164,27 @@ public class AdminController {
     @DeleteMapping("/doctors/{id}")
     public ResponseEntity<String> deleteDoctor(@PathVariable int id) {
         Optional<Doctor> doctor = doctorRepository.findById(id);
+        
         if (doctor.isPresent()) {
+            // Check if there are any pending appointments
+            List<Appointment> pendingAppointments = appointmentRepository.findByDoctorIdAndStatus(id, "Pending");
+            
+            if (!pendingAppointments.isEmpty()) {
+                return ResponseEntity.status(400).body("Doctor cannot be deleted as there are pending appointments.");
+            }
+
+            // Delete all appointments associated with the doctor
+            appointmentRepository.deleteByDoctorId(id);
+
+            // Delete the doctor
             doctorRepository.deleteById(id);
-            return ResponseEntity.ok("Doctor deleted successfully.");
+            
+            return ResponseEntity.ok("Doctor and associated appointments deleted successfully.");
         } else {
             return ResponseEntity.status(404).body("Doctor not found.");
         }
     }
+
 
     // DELETE a specialist by ID
     @DeleteMapping("/specialists/{id}")
