@@ -42,6 +42,19 @@ const Specialists = () => {
       .catch(() => setError("Failed to add specialist."));
   };
 
+  const removeSpecialist = (id) => {
+    axios
+      .delete(`http://localhost:8888/admin/specialists/${id}`)
+      .then((response) => {
+        console.log(response.data); // Log API response
+        fetchSpecialists(); // Refresh list after deletion
+      })
+      .catch((error) => {
+        console.error("Error removing specialist:", error.response?.data || error.message);
+        setError("Failed to remove specialist.");
+      });
+  };
+  
   return (
     <div className="admin-dashboard">
       <AdminNavbar />
@@ -62,6 +75,7 @@ const Specialists = () => {
           >
             Add Specialisation
           </button>
+  
         </div>
 
         {loading ? (
@@ -74,6 +88,7 @@ const Specialists = () => {
               <tr>
                 <th>ID</th>
                 <th>Specialty</th>
+                <th>Action</th>
               </tr>
             </thead>
             <tbody>
@@ -81,6 +96,14 @@ const Specialists = () => {
                 <tr key={specialist.id}>
                   <td>{specialist.id}</td>
                   <td>{specialist.specialistName}</td>
+                  <td>
+                    <button
+                      onClick={() => removeSpecialist(specialist.id)}
+                      className="delete-button"
+                    >
+                      Remove
+                    </button>
+                </td>
                 </tr>
               ))}
             </tbody>

@@ -16,7 +16,9 @@ const Doctors = () => {
   const [specialists, setSpecialists] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
- 
+  const [phoneError, setPhoneError] = useState("");
+
+
   const [newDoctor, setNewDoctor] = useState({
     fullName: "",
     dateOfBirth: "",
@@ -150,7 +152,10 @@ useEffect(() => {
 
   const handleAddDoctor = (e) => {
     e.preventDefault();
-  
+    if (newDoctor.phone.length !== 10) {
+      setPhoneError("Phone number must be exactly 10 digits");
+      return; // Prevent submission
+    }
     const doctorWithPassword = {
       ...newDoctor,
       password: newDoctor.fullName,
@@ -158,6 +163,8 @@ useEffect(() => {
     };
 
     console.log(doctorWithPassword)
+
+    
   
     axios
       .post("http://localhost:8888/admin/doctors", doctorWithPassword)
@@ -169,6 +176,32 @@ useEffect(() => {
   
     alert("Doctor has been added. Please login with your full name as the password.");
   };
+  
+
+  const handlePhoneChange = (e) => {
+    const inputValue = e.target.value;
+  
+    // Allow only numbers
+    if (!/^\d*$/.test(inputValue)) {
+      setPhoneError("Only numbers are allowed");
+      return;
+    }
+  
+    // Allow input only up to 10 digits
+    if (inputValue.length > 10) {
+      return; // Prevent typing more than 10 digits
+    }
+  
+    setNewDoctor({ ...newDoctor, phone: inputValue });
+  
+    // Show error if length is less than 10
+    if (inputValue.length < 10) {
+      setPhoneError("Phone number must be exactly 10 digits");
+    } else {
+      setPhoneError(""); // Clear error when valid
+    }
+  };
+  
   
   return (
     <div className="admin-dashboard">
@@ -277,8 +310,16 @@ useEffect(() => {
             </select>
             <input type="email" placeholder="Email" required
               value={newDoctor.email} onChange={(e) => setNewDoctor({ ...newDoctor, email: e.target.value })} />
-            <input type="text" placeholder="Phone" required
-              value={newDoctor.phone} onChange={(e) => setNewDoctor({ ...newDoctor, phone: e.target.value })} />
+            {/* <input type="text" placeholder="Phone" required
+              value={newDoctor.phone} onChange={(e) => setNewDoctor({ ...newDoctor, phone: e.target.value })} /> */}
+              <input
+                type="text"
+                placeholder="Phone"
+                required
+                value={newDoctor.phone}
+                onChange={handlePhoneChange}
+              />
+              {phoneError && <p style={{ color: "red", fontSize: "12px" }}>{phoneError}</p>}
             <button type="submit" className="submit-button">Add Doctor</button>
           </form>
         </Modal>
