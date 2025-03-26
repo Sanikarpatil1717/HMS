@@ -266,6 +266,33 @@ footer {
   background-color: #0056b3;
 }
 
+.delete-sp-button {
+  background-color: #007bff;
+  color: white;
+  padding: 10px 15px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  width: 200px; /* Fixed width for better centering */
+  margin: 20px auto; /* Centers horizontally */
+  display: block; /* Ensures margin auto works */
+  text-align: center;
+}
+
+.delete-sp-button:hover{
+  background-color: #0056b3;
+}
+
+.error-delete {
+  color: red;
+  font-weight: bold;
+}
+
+.success-delete {
+  color: green;
+  font-weight: bold;
+}
+
 
 /* User Dashboard */
 /* Card Styling */
