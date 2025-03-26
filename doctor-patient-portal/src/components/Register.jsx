@@ -58,9 +58,7 @@ const Register = () => {
         <input
           type="password"
           placeholder="Password"
-          onChange={(e) =>  {
-            setUser({ ...user, email: e.target.value });
-           validateEmail(e.target.value)}}
+          onChange={(e) => setUser({ ...user, password: e.target.value })} // Fix: Update the password field
         />
         {emailError && <p className="error-text">{emailError}</p>} {/* Show error message */}
 
