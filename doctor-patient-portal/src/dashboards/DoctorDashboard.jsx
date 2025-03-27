@@ -48,6 +48,7 @@ const DoctorDashboard = () => {
     const updatedAppointments = await Promise.all(
       appointmentsData.map(async (appointment) => {
         const patientName = await getPatientName(appointment.userId);
+        console.log(patientName);
         return { ...appointment, patientName };
       })
     );
