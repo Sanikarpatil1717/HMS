@@ -66,10 +66,10 @@ const Appointments = () => {
     if (!searchValue.trim()) return;
 
     let url = "";
-    if (filterType === "userId") {
-      url = `http://localhost:8888/admin/appointments/userId/${searchValue}`;
-    } else if (filterType === "doctorId") {
-      url = `http://localhost:8888/admin/appointments/doctorId/${searchValue}`;
+    if (filterType === "user") {
+      url = `http://localhost:8888/admin/appointments/username/${searchValue}`;
+    } else if (filterType === "doctor") {
+      url = `http://localhost:8888/admin/appointments/doctorname/${searchValue}`;
     }
 
     setLoading(true);
@@ -95,15 +95,15 @@ const Appointments = () => {
         <div className="filter-container">
           <select value={filterType} onChange={handleFilterChange} className="filter-select">
             <option value="all">All Appointments</option>
-            <option value="userId">Filter by User</option>
-            <option value="doctorId">Filter by Doctor</option>
+            <option value="user">Filter by User</option>
+            <option value="doctor">Filter by Doctor</option>
           </select>
 
           {/* Show Input Field Only for User ID or Doctor ID */}
           {filterType !== "all" && (
             <>
               <input
-                type="number"
+                type="text"
                 value={searchValue}
                 onChange={(e) => setSearchValue(e.target.value)}
                 placeholder={`Enter ${filterType}`}

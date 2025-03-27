@@ -12,7 +12,7 @@ import com.example.demo.models.Appointment;
 import jakarta.transaction.Transactional;
 
 public interface AppointmentRepository extends JpaRepository<Appointment, Long> {
-	List<Appointment> findByUserId(int userId);
+	List<Appointment> findByUserId(Long userId);
     List<Appointment> findByDoctorId(int doctorId);
     
     // Fetch all pending appointments of a specific doctor

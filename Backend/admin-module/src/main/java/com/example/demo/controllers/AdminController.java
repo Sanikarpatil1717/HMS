@@ -1,12 +1,12 @@
 package com.example.demo.controllers;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -91,16 +91,42 @@ public class AdminController {
         return appointmentRepository.findAll();
     }
     
-    // GET appointments filtered by userId
-    @GetMapping("/appointments/userId/{userId}")
-    public List<Appointment> getUsersByUserId(@PathVariable int userId) {
-        return appointmentRepository.findByUserId(userId);
+    // GET appointments filtered by userName
+    @GetMapping("/appointments/username/{fullName}")
+    public ResponseEntity<?> getAppointmentsByUser(@PathVariable String fullName) {
+        List<User> users = userRepository.findByFullNameContainingIgnoreCase(fullName);
+
+        if (users.isEmpty()) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                .body("No users found with fullName: " + fullName);
+        }
+
+        // Collect all appointments for the matching users
+        List<Appointment> appointments = new ArrayList<>();
+        for (User user : users) {
+            appointments.addAll(appointmentRepository.findByUserId(user.getId()));
+        }
+
+        return ResponseEntity.ok(appointments);
     }
 
-    // GET appointments filtered by doctorId
-    @GetMapping("/appointments/doctorId/{doctorId}")
-    public List<Appointment> getUsersByDoctorId(@PathVariable int doctorId) {
-        return appointmentRepository.findByDoctorId(doctorId);
+    // GET appointments filtered by doctorName
+    @GetMapping("/appointments/doctorname/{fullName}")
+    public ResponseEntity<?> getAppointmentsByDoctor(@PathVariable String fullName) {
+        List<Doctor> doctors = doctorRepository.findByFullNameContainingIgnoreCase(fullName);
+
+        if (doctors.isEmpty()) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                .body("No doctors found with fullName: " + fullName);
+        }
+
+        // Collect all appointments for the matching doctors
+        List<Appointment> appointments = new ArrayList<>();
+        for (Doctor doctor : doctors) {
+            appointments.addAll(appointmentRepository.findByDoctorId(doctor.getId()));
+        }
+
+        return ResponseEntity.ok(appointments);
     }
     
     // UPDATE an existing doctor

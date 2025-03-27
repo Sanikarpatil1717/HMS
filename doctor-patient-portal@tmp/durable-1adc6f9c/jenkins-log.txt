@@ -1,0 +1,9 @@
+
+D:\Project\HMS\doctor-patient-portal>start /B npm start 
+
+> doctor-patient-portal@0.1.0 start
+> react-scripts start
+
+Something is already running on port 3000.
+
+D:\Project\HMS\doctor-patient-portal>

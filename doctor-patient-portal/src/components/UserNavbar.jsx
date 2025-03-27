@@ -12,7 +12,8 @@ function UserNavbar({ setShowPasswordModal, handleLogout }) {
       </div>
       <div className="nav-links">
         <Link to="/" className="nav-item">Home</Link>
-        <button onClick={setShowPasswordModal}>Change Password</button> {/* Fix */}
+        <button onClick={setShowPasswordModal}>Change Password</button>
+        <button>Delete Account</button>
         <button onClick={handleLogout}>Logout</button>
       </div>
     </nav>
