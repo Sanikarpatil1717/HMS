@@ -10,6 +10,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -18,6 +19,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.example.demo.dto.ChangePasswordRequest;
 import com.example.demo.dto.LoginRequest;
 import com.example.demo.models.Doctor;
+import com.example.demo.models.User;
 import com.example.demo.repositories.DoctorRepository;
 import com.example.demo.services.DoctorService;
 
@@ -95,4 +97,14 @@ public class DoctorController {
         }
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Incorrect Old Password");
     }
+    
+    @GetMapping("/{docId}")
+    public ResponseEntity<Doctor> getUserById(@PathVariable("docId") Long docId) {
+        Doctor doctor = doctorService.getDoctorById(docId);
+        if (doctor != null) {
+            return ResponseEntity.ok(doctor);
+        }
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
+    }
+
 }

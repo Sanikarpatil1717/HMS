@@ -2,6 +2,7 @@ package com.example.demo.services;
 
 import com.example.demo.dto.LoginRequest;
 import com.example.demo.models.Doctor;
+import com.example.demo.models.User;
 import com.example.demo.repositories.DoctorRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -59,4 +60,9 @@ public class DoctorService {
         }
         return false;
     }
+    
+    public Doctor getDoctorById(Long userId) {
+        return doctorRepository.findById(userId).orElse(null);
+    }
+
 }

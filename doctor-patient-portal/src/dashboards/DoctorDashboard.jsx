@@ -26,13 +26,33 @@ const DoctorDashboard = () => {
     }
   }, [doctorId]);
 
+  const getPatientName = async (userId) => {
+    try {
+      const response = await axios.get(`http://localhost:8888/api/users/${userId}`);
+      console.log(response.data.fullName)
+      return response.data.fullName; // Assuming fullName exists in response
+    } catch (error) {
+      console.error(`Error fetching patient details for userId: ${userId}`, error);
+      return "Unknown";
+    }
+  };
+  
   const fetchAppointments = async () => {
     try {
       // setLoading(true);
       console.log(`Fetching appointments for doctorId: ${doctorId}`);
       const response = await getAppointmentsByDoctor(doctorId);
-      console.log("API Response:", response.data);
-      setAppointments(response.data);
+      const appointmentsData = response.data;
+
+    // Fetch patient names for each appointment
+    const updatedAppointments = await Promise.all(
+      appointmentsData.map(async (appointment) => {
+        const patientName = await getPatientName(appointment.userId);
+        return { ...appointment, patientName };
+      })
+    );
+
+    setAppointments(updatedAppointments);
       setLoading(false);
     } catch (error) {
       setError("Error fetching doctor appointments:", error);
@@ -132,7 +152,7 @@ const DoctorDashboard = () => {
               <thead>
                 <tr>
                   <th>ID</th>
-                  <th>Patient ID</th>
+                  <th>Patient Name</th>
                   <th>Diseases</th>
                   <th>Date</th>
                   <th>Status/Prescription</th>
@@ -141,10 +161,10 @@ const DoctorDashboard = () => {
               </thead>
               <tbody>
                 {appointments.length > 0 ? (
-                  appointments.map((appointment) => (
+                  appointments.map((appointment,index) => (
                     <tr key={appointment.id}>
-                      <td>{appointment.id}</td>
-                      <td>{appointment.userId}</td>
+                      <td>{index+1}</td>
+                      <td>{appointment.patientName || "Unknown"}</td>
                       <td>{appointment.diseases}</td>
                       <td>{appointment.appointmentDate}</td>
                       <td>{appointment.status || "Pending"}</td>
