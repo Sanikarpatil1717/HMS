@@ -78,13 +78,52 @@ function UserDashboard() {
       .then((response) => setDoctors(response.data))
       .catch((error) => console.error("Error fetching doctors:", error));
   }, []);
-   // Handle form submission
-   const handleSubmit = async (e) => {
+
+  const getMinDateTime = () => {
+    const now = new Date();
+    now.setSeconds(0, 0); // Remove seconds and milliseconds
+    return now.toISOString().slice(0, 16); // Format as "YYYY-MM-DDTHH:mm"
+  };
+
+  const getMaxDateTime = () => {
+    const threeMonthsAhead = new Date();
+    threeMonthsAhead.setMonth(threeMonthsAhead.getMonth() + 3);
+    threeMonthsAhead.setHours(22, 0, 0, 0); // Set to 10:00 PM
+    return threeMonthsAhead.toISOString().slice(0, 16); // Format as "YYYY-MM-DDTHH:mm"
+  };
+
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    if (!formData.userId) {
-      alert("User ID not found. Please log in again.");
+
+    // Validate phone number
+    const phoneRegex = /^[0-9]{10}$/;
+    if (!phoneRegex.test(formData.phone)) {
+      alert("Phone number must be a valid 10-digit number.");
       return;
     }
+
+    // Validate appointment date and time
+    const appointmentDate = new Date(formData.appointmentDate);
+    const now = new Date();
+    const threeMonthsAhead = new Date();
+    threeMonthsAhead.setMonth(now.getMonth() + 3);
+
+    if (appointmentDate < now) {
+      alert("Appointment date cannot be in the past.");
+      return;
+    }
+    if (appointmentDate > threeMonthsAhead) {
+      alert("Appointment date cannot be more than 3 months ahead.");
+      return;
+    }
+
+    // Validate appointment time (7:00 AM to 10:00 PM)
+    const appointmentHours = appointmentDate.getHours();
+    if (appointmentHours < 7 || appointmentHours >= 22) {
+      alert("Appointment time must be between 7:00 AM and 10:00 PM.");
+      return;
+    }
+
     try {
       await bookAppointment(formData);
       alert("Appointment booked successfully!");
@@ -133,11 +172,43 @@ function UserDashboard() {
                   ))}
                 </select>
               </div>
-              <input type="datetime-local" name="appointmentDate" placeholder="Choose Appointment Date" onChange={handleChange} required />
-              <input type="email" name="email" placeholder="Enter Email" onChange={handleChange} required />
-              <input type="text" name="phone" placeholder="Enter Phone Number" onChange={handleChange} required />
-              <input type="text" name="diseases" placeholder="Describe Symptoms" onChange={handleChange} required />
-              <input type="text" name="address" placeholder="Enter Address" onChange={handleChange} required />
+              <input
+                type="datetime-local"
+                name="appointmentDate"
+                placeholder="Choose Appointment Date"
+                onChange={handleChange}
+                required
+                min={getMinDateTime()} // Restrict to current date and time or later
+                max={getMaxDateTime()} // Restrict to 3 months ahead
+              />
+              <input
+                type="email"
+                name="email"
+                placeholder="Enter Email"
+                onChange={handleChange}
+                required
+              />
+              <input
+                type="text"
+                name="phone"
+                placeholder="Enter Phone Number"
+                onChange={handleChange}
+                required
+              />
+              <input
+                type="text"
+                name="diseases"
+                placeholder="Describe Symptoms"
+                onChange={handleChange}
+                required
+              />
+              <input
+                type="text"
+                name="address"
+                placeholder="Enter Address"
+                onChange={handleChange}
+                required
+              />
               <button type="submit" className="submit-button">Book Appointment</button>
             </form>
         </Modal>  

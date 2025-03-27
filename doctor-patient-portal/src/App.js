@@ -5,7 +5,6 @@ import Home from "./components/Home";
 import AdminDashboard from "./dashboards/AdminDashboard";
 import DoctorDashboard from "./dashboards/DoctorDashboard";
 import UserDashboard from "./dashboards/UserDashboard";
-import BookAppointment from "./components/BookAppointment";
 import ViewAppointments from "./components/ViewAppointments";
 import AdminLogin from "./components/AdminLogin";
 import DoctorLogin from "./components/DoctorLogin";
@@ -32,7 +31,7 @@ function App() {
         <Route path="/user-dashboard" element={<UserDashboard />} />
         <Route path="/doctor-dashboard" element={<DoctorDashboard />} />
 
-        <Route path="/book" element={<BookAppointment />} />
+        {/* <Route path="/book" element={<BookAppointment />} /> */}
         <Route path="/appointments" element={<ViewAppointments />} />
 
 
