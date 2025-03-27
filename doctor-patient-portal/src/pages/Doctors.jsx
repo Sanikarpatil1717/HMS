@@ -90,12 +90,30 @@ useEffect(() => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
  
+  const getMinDOB = () => {
+    const today = new Date();
+    today.setFullYear(today.getFullYear() - 100); // Maximum age: 100 years
+    return today.toISOString().split("T")[0]; // Format as "YYYY-MM-DD"
+  };
+
+  const getMaxDOB = () => {
+    const today = new Date();
+    today.setFullYear(today.getFullYear() - 21); // Minimum age: 21 years
+    return today.toISOString().split("T")[0]; // Format as "YYYY-MM-DD"
+  };
+
   const handleSave = () => {
+    // Validate phone number
+    const phoneRegex = /^[0-9]{10}$/;
+    if (!phoneRegex.test(formData.phone)) {
+      alert("Phone number must be a valid 10-digit number.");
+      return;
+    }
+
     axios
       .put(`http://localhost:8888/admin/doctors/${selectedDoctor.id}`, formData)
       .then((response) => {
         setDoctors(doctors.map((doc) => (doc.id === selectedDoctor.id ? response.data : doc)));
-        console.log(response);
         alert("Doctor updated successfully");
         closeModal();
       })
@@ -161,15 +179,20 @@ useEffect(() => {
  
   const handleAddDoctor = (e) => {
     e.preventDefault();
- 
+
+    // Validate phone number
+    const phoneRegex = /^[0-9]{10}$/;
+    if (!phoneRegex.test(newDoctor.phone)) {
+      alert("Phone number must be a valid 10-digit number.");
+      return;
+    }
+
     const doctorWithPassword = {
       ...newDoctor,
       password: newDoctor.fullName,
-      specialism: { id: newDoctor.specialismId } // Send only the ID
+      specialism: { id: newDoctor.specialismId }, // Send only the ID
     };
- 
-    console.log(doctorWithPassword)
- 
+
     axios
       .post("http://localhost:8888/admin/doctors", doctorWithPassword)
       .then((response) => {
@@ -177,7 +200,7 @@ useEffect(() => {
         closeAddDoctorModal();
       })
       .catch((error) => console.error("Error adding doctor:", error));
- 
+
     alert("Doctor has been added. Please login with your full name as the password.");
   };
  
@@ -272,7 +295,10 @@ useEffect(() => {
             <input type="text" placeholder="Full Name" required
               value={newDoctor.fullName} onChange={(e) => setNewDoctor({ ...newDoctor, fullName: e.target.value })} />
             <input type="date" placeholder="Date of Birth" required
-              value={newDoctor.dateOfBirth} onChange={(e) => setNewDoctor({ ...newDoctor, dateOfBirth: e.target.value })} />
+              value={newDoctor.dateOfBirth} onChange={(e) => setNewDoctor({ ...newDoctor, dateOfBirth: e.target.value })}
+              min={getMinDOB()} // Restrict DOB to maximum age of 100 years
+              max={getMaxDOB()} // Restrict DOB to minimum age of 21 years
+            />
             <input type="text" placeholder="Qualification" required
               value={newDoctor.qualification} onChange={(e) => setNewDoctor({ ...newDoctor, qualification: e.target.value })} />
             <select
@@ -329,6 +355,8 @@ useEffect(() => {
                   value={formData.dateOfBirth}
                   onChange={handleChange}
                   required
+                  min={getMinDOB()} // Restrict DOB to maximum age of 100 years
+                  max={getMaxDOB()} // Restrict DOB to minimum age of 21 years
                 />
                 <input
                   type="text"
