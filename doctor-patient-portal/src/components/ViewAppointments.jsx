@@ -22,10 +22,29 @@ const ViewAppointments = () => {
     }
   }, [loggedUserId]);
 
+  const getDoctorName = async (doctorId) => {
+    try {
+      const response = await axios.get(`http://localhost:8888/api/doctors/${doctorId}`);
+      return response.data.fullName; // Assuming fullName exists in response
+    } catch (error) {
+      console.error(`Error fetching doctor details for doctorId: ${doctorId}`, error);
+      return "Unknown";
+    }
+  };
   const fetchAppointments = async () => {
     try {
       const response = await getAppointmentsByUser(loggedUserId);
-      setAppointments(response.data);
+      const appointmentsData = response.data;
+
+      // Fetch doctor names for each appointment
+      const updatedAppointments = await Promise.all(
+        appointmentsData.map(async (appointment) => {
+          const docName = await getDoctorName(appointment.doctorId);
+          return { ...appointment, doctorName: docName };
+        })
+      );
+
+      setAppointments(updatedAppointments);
     } catch (error) {
       console.error("Error fetching appointments", error);
     }
@@ -86,17 +105,17 @@ const ViewAppointments = () => {
             <thead>
               <tr>
                 <th>ID</th>
-                <th>Doctor ID</th>
+                <th>Doctor Name</th>
                 <th>Date</th>
                 <th>Diseases</th>
                 <th>Status</th>
               </tr>
             </thead>
             <tbody>
-              {appointments.map((appointment) => (
+              {appointments.map((appointment,index) => (
                 <tr key={appointment.id} onClick={() => setSelectedAppointment(appointment)}>
-                  <td>{appointment.id}</td>
-                  <td>{appointment.doctorId}</td>
+                  <td>{index+1}</td>
+                  <td>{appointment.doctorName || "Unknown"}</td>
                   <td>{appointment.appointmentDate}</td>
                   <td>{appointment.diseases}</td>
                   <td>{appointment.status}</td>

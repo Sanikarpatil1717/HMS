@@ -95,8 +95,8 @@ const Appointments = () => {
         <div className="filter-container">
           <select value={filterType} onChange={handleFilterChange} className="filter-select">
             <option value="all">All Appointments</option>
-            <option value="userId">Filter by User ID</option>
-            <option value="doctorId">Filter by Doctor ID</option>
+            <option value="userId">Filter by User</option>
+            <option value="doctorId">Filter by Doctor</option>
           </select>
 
           {/* Show Input Field Only for User ID or Doctor ID */}
